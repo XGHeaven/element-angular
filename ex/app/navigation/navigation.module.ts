@@ -10,6 +10,7 @@ import { ExStepsComponent } from './steps/steps.component'
 import { ExSharedModule } from '../shared/module'
 import { ExDropdownComponent } from './dropdown/dropdown.component'
 import { ExBreadcrumbComponent } from './breadcrumb/breadcrumb.component'
+import { ExTabsComponent } from './tabs/tabs.component'
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { ExBreadcrumbComponent } from './breadcrumb/breadcrumb.component'
     ExStepsComponent,
     ExDropdownComponent,
     ExBreadcrumbComponent,
+    ExTabsComponent,
   ],
   imports: [
     CommonModule,

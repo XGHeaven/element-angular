@@ -167,6 +167,10 @@
       "name-en": "NavMenu",
       "link": "/nav/menu"
     }, {
+      "name": "Tabs 标签页",
+      "name-en": "Tabs",
+      "link": "/nav/tabs"
+    }, {
       "name": "Breadcrumb 面包屑",
       "name-en": "Breadcrumb",
       "link": "/nav/breadcrumb"

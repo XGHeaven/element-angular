@@ -10,7 +10,7 @@ export class ExBreadcrumbComponent {
   
   private code: string[] = code
   private page: any = {
-    previous: { name: 'Nav-menu 导航菜单', link: '/nav/menu' },
+    previous: { name: 'Tabs 标签页', link: '/nav/tabs' },
     next: { name: 'Steps 步骤条', link: '/nav/steps' },
   }
   private exClass: any = class {
