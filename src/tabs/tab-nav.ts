@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter, ViewChildren, QueryList, ElementRef, Host, ViewChild } from '@angular/core'
 import { ElTabs } from './tabs'
+import { ElTabPane } from './tab-pane'
 
 function noop(): void {}
 const firstUpperCase = (str: string) => {
@@ -22,13 +23,7 @@ const firstUpperCase = (str: string) => {
         <div
           *ngFor="let pane of panes"
           class="el-tabs__item"
-          [class]="'is-' + parent.tabPosition"
-          [ngClass]="{
-            'is-active': pane.active,
-            'is-disabled': pane.disabled,
-            'is-closable': closable,
-            'is-focus': isFocus
-          }"
+          [ngClass]="paneClasses(pane)"
           [id]="'tab-' + pane.name"
           role="tab"
           [attr.aria-controls]="'pane-' + pane.name"
@@ -37,24 +32,29 @@ const firstUpperCase = (str: string) => {
           [tabindex]="tabindex"
           (blur)="removeFocus()"
           (focus)="setFocus()"
-          (click)="removeFocus(); tabClick.emit({pane: pane, event: $event})"
-      >
-        {{pane.label}}
-        <span *ngIf="pane.isClosable || editable" class="el-icon-close" (click)="tabRemove.emit({pane: pane, event: $event})"></span>
-      </div>
+          (click)="removeFocus(); tabClick.emit(pane)"
+        >
+          <ng-container *ngIf="pane.labelTpl">
+            <ng-template [ngTemplateOutlet]="pane.labelTpl"></ng-template>
+          </ng-container>
+          <ng-container *ngIf="!pane.labelTpl">
+            {{pane.label}}
+          </ng-container>
+          <span *ngIf="pane.isClosable || editable" class="el-icon-close" (click)="tabRemove.emit(pane)"></span>
+        </div>
       </div>
     </div>
   </div>
   `,
 })
 export class ElTabNav {
-  @Input() panes: any[]
+  @Input() panes: ElTabPane[]
   @Input() currentName: string
   @Input() editable: boolean
   @Input() type: string
 
-  @Output('tab-click') tabClick: EventEmitter<any> = new EventEmitter()
-  @Output('tab-remove') tabRemove: EventEmitter<any> = new EventEmitter()
+  @Output('tab-click') tabClick: EventEmitter<ElTabPane> = new EventEmitter()
+  @Output('tab-remove') tabRemove: EventEmitter<ElTabPane> = new EventEmitter()
 
   @ViewChildren('tabs') tabs: QueryList<ElementRef>
   @ViewChild('navScroll') navScroll: ElementRef
@@ -79,6 +79,17 @@ export class ElTabNav {
 
   get sizeName(): 'width' | 'height' {
     return ['top', 'bottom'].indexOf(this.parent.tabPosition) !== -1 ? 'width' : 'height';
+  }
+
+  paneClasses(pane: ElTabPane): {} {
+    const closable = pane.isClosable || this.editable
+    return {
+      ['is-' + this.parent.tabPosition]: true,
+      'is-active': pane.active,
+      'is-disabled': pane.disabled,
+      'is-closable': closable,
+      'is-focus': this.isFocus
+    }
   }
 
   scrollPrev(): void {

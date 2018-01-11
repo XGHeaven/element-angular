@@ -15,6 +15,7 @@ export class ExTabsComponent {
 
   private exClass: any = class {
     private activeName: string = 'first'
+    private tabPosition: string = 'top'
   }
   
 }

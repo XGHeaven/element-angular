@@ -1,13 +1,12 @@
-import { Component, Input, Host, OnInit, OnDestroy } from '@angular/core'
+import { Component, Input, Host, OnInit, OnDestroy, AfterViewInit, forwardRef, Inject, TemplateRef, ContentChild } from '@angular/core'
 import { ElTabs } from './tabs'
-import { TabPane } from './tab.interface'
 
 @Component({
   selector: 'el-tab-pane',
   template: `
     <div
       class="el-tab-pane"
-      *ngIf="active"
+      [hidden]="!active"
       role="tabpanel"
       [id]="'pane-' + paneName"
       [attr.aria-hidden]="!active"
@@ -17,26 +16,29 @@ import { TabPane } from './tab.interface'
     </div>
   `,
 })
-export class ElTabPane implements OnInit, OnDestroy, TabPane {
+export class ElTabPane implements OnInit, OnDestroy, AfterViewInit {
   @Input() label: string
   @Input() labelContent: Function
-  @Input() name: string
+  @Input() name: string = this.parent.getRandomName()
   @Input() closable: boolean
   @Input() disabled: boolean
-  index: string = ''
+
+  @ContentChild('label') labelTpl: TemplateRef<HTMLElement>
 
   constructor(
-    @Host() private parent: ElTabs,
+    @Inject(forwardRef(() => ElTabs)) @Host() private parent: ElTabs,
   ) {
-
+    console.log(this)
   }
 
   ngOnInit(): void {
-    this.parent.addPanes(this);
+  }
+
+  ngAfterViewInit(): void {
+    // this.parent.addPanes(this);
   }
 
   ngOnDestroy(): void {
-    this.parent.removePanes(this)
   }
 
   get isClosable(): boolean {
@@ -44,10 +46,6 @@ export class ElTabPane implements OnInit, OnDestroy, TabPane {
   }
 
   get active(): boolean {
-    return this.parent.currentName === (this.name || this.index);
-  }
-
-  get paneName(): string {
-    return this.name || this.index;
+    return this.parent.currentName === this.name;
   }
 }
